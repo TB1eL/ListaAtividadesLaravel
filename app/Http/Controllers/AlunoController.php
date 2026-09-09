@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-<?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Aluno;
@@ -31,9 +29,14 @@ class AlunoController extends Controller
 
         return view('alunos.index', compact('alunos', 'quantidade'));
     }
-    
+
     public function create() {}
-    public function store(Request $request) {}
+
+    public function store(Request $request) {
+        Aluno::create($request->all());
+        return redirect()->route('alunos.index');
+    }
+
     public function show($id) {}
     public function edit($id) {}
     public function update(Request $request, $id) {}

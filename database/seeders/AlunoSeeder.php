@@ -13,8 +13,6 @@ class AlunoSeeder extends Seeder
      */
     public function run(): void
     {
-        public function run() {
-            Aluno::factory()->count(10)->create(); // Exige criar a Factory também (php artisan make:factory AlunoFactory)
-        }
+        Aluno::factory()->count(10)->create();
     }
 }
