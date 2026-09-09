@@ -5,6 +5,7 @@
         <ul>
             @foreach($alunos as $aluno)
                 <li>{{ $aluno->nome }}</li>
+                <li>{{ $aluno->curso->nome }}</li>
             @endforeach
         </ul>
     @endif
