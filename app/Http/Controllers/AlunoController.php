@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AlunoRequest;
 use App\Models\Aluno;
 use Illuminate\Http\Request;
 
 class AlunoController extends Controller
 {
-    public function index(Request $request)
+    public function index(AlunoRequest $request)
     {
         $quantidade = Aluno::count();
         $query = Aluno::query();
@@ -32,13 +33,13 @@ class AlunoController extends Controller
 
     public function create() {}
 
-    public function store(Request $request) {
+    public function store(AlunoRequest $request) {
         Aluno::create($request->all());
         return redirect()->route('alunos.index');
     }
 
     public function show($id) {}
     public function edit($id) {}
-    public function update(Request $request, $id) {}
+    public function update(AlunoRequest $request, $id) {}
     public function destroy($id) {}
 }
