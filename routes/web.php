@@ -1,18 +1,28 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AlunoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/sobre', function () { return 'Página Sobre'; });
-Route::get('/alunos', function () { return 'Página de Alunos'; });
-Route::get('/contato', function () { return 'Página de Contato'; });
-Route::get('/produto/{id}', function ($id) { return "Produto: {$id}"; });
-Route::get('/categoria/{id}', function ($id) { return "Categoria: {$id}"; });
-Route::get('/usuario/{id}', function ($id) { return "Usuário: {$id}"; });
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
+// Grupo de rotas protegidas pelo login do Breeze
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Rota do seu CRUD de Alunos (ATV 4 e 13)
+    Route::resource('alunos', AlunoController::class);
+});
+
+// Suas rotas com Middleware de Role (ATV 21)
 Route::get('/admin', function () {
     return 'Área restrita: Apenas Administradores.';
 })->middleware(['auth', 'role:admin']);
@@ -20,3 +30,5 @@ Route::get('/admin', function () {
 Route::get('/professor', function () {
     return 'Área restrita: Apenas Professores.';
 })->middleware(['auth', 'role:professor']);
+
+require __DIR__.'/auth.php';

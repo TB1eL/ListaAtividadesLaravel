@@ -2,31 +2,30 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AlunoRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize() { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-    public function rules() {
+    public function rules(): array
+    {
         return [
-            'nome' => 'required|min:3',
+            'nome' => 'required|string|min:3',
+            'curso_id' => 'required|integer|exists:cursos,id',
         ];
     }
 
-    public function messages() {
+    public function messages(): array
+    {
         return [
-            'nome.required' => 'O campo nome é obrigatório!',
-            'nome.min' => 'O nome deve ter no mínimo 3 caracteres.'
+            'nome.required' => 'O campo nome é obrigatório.',
+            'nome.min' => 'O nome deve ter no mínimo 3 caracteres.',
+            'curso_id.required' => 'O campo curso é obrigatório.',
+            'curso_id.exists' => 'O curso informado não existe no banco de dados.',
         ];
     }
 }

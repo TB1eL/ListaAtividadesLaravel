@@ -10,13 +10,14 @@ class CheckRole
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role) {
-        if (auth()->check() && auth()->user()->role == $role) {
+    public function handle(Request $request, Closure $next, string $role): Response
+    {
+        // Verifica se o usuário está logado e se a role dele bate com a exigida na rota
+        if (auth()->check() && auth()->user()->role === $role) {
             return $next($request);
         }
-        abort(403, 'Acesso negado.');
+
+        abort(403, 'Acesso negado. Você não tem permissão para acessar esta página.');
     }
 }

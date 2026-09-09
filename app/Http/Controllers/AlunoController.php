@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-namespace App\Http\Controllers;
-
-use App\Http\Requests\AlunoRequest;
 use App\Models\Aluno;
+use App\Http\Requests\AlunoRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate; // Correção para Laravel 11
 
 class AlunoController extends Controller
 {
-    public function index(AlunoRequest $request)
+    public function index(Request $request)
     {
         $quantidade = Aluno::count();
         $query = Aluno::query();
@@ -25,22 +22,58 @@ class AlunoController extends Controller
             $query->where('nome', 'like', '%' . $request->busca . '%');
         }
 
-        $query->latest();
-        $alunos = $query->get();
+        $alunos = $query->latest()->get();
 
         return view('alunos.index', compact('alunos', 'quantidade'));
     }
 
-    public function create() {}
+    public function create()
+    {
+        Gate::authorize('create', Aluno::class);
+        
+        return view('alunos.create');
+    }
 
-    public function store(AlunoRequest $request) {
-        $this->authorize('create', Aluno::class);
-        Aluno::create($request->all());
+    public function store(AlunoRequest $request)
+    {
+        Gate::authorize('create', Aluno::class);
+        
+        $dados = $request->validated();
+        
+        $dados['user_id'] = auth()->id();
+        
+        Aluno::create($dados);
+
         return redirect()->route('alunos.index');
     }
 
-    public function show($id) {}
-    public function edit($id) {}
-    public function update(AlunoRequest $request, $id) {}
-    public function destroy($id) {}
+    public function show(Aluno $aluno)
+    {
+        return view('alunos.show', compact('aluno'));
+    }
+
+    public function edit(Aluno $aluno)
+    {
+        Gate::authorize('update', $aluno);
+        
+        return view('alunos.edit', compact('aluno'));
+    }
+
+    public function update(AlunoRequest $request, Aluno $aluno)
+    {
+        Gate::authorize('update', $aluno);
+        
+        $aluno->update($request->validated());
+
+        return redirect()->route('alunos.index');
+    }
+
+    public function destroy(Aluno $aluno)
+    {
+        Gate::authorize('delete', $aluno);
+        
+        $aluno->delete();
+
+        return redirect()->route('alunos.index');
+    }
 }
