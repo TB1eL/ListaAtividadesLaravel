@@ -34,6 +34,7 @@ class AlunoController extends Controller
     public function create() {}
 
     public function store(AlunoRequest $request) {
+        $this->authorize('create', Aluno::class);
         Aluno::create($request->all());
         return redirect()->route('alunos.index');
     }
